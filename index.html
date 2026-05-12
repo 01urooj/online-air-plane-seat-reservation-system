@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SkyFly — Luxury Air Travel</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Cabinet+Grotesk:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════════════════════
+   DESIGN SYSTEM — LUXURY DARK GOLD
+══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#04080f;
+  --ink2:#080f1e;
+  --ink3:#0c1628;
+  --ink4:#101e36;
+  --glass:rgba(255,255,255,0.04);
+  --glass2:rgba(255,255,255,0.07);
+  --glass3:rgba(255,255,255,0.11);
+  --rim:rgba(255,255,255,0.09);
+  --rim2:rgba(255,255,255,0.16);
+  --rim3:rgba(255,255,255,0.24);
+  --gold:#c9a84c;
+  --gold2:#e8c96a;
+  --gold3:#f5e09a;
+  --gold-glow:rgba(201,168,76,0.25);
+  --blue:#1a6cf0;
+  --blue2:#4d8fff;
+  --cyan:#00d4ff;
+  --emerald:#00e5a0;
+  --rose:#ff4d6d;
+  --text:#f0ece4;
+  --text2:#a89880;
+  --text3:#6b5f50;
+  --r:12px;--r2:18px;--r3:26px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:'Cabinet Grotesk',sans-serif;
+  background:var(--ink);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+  cursor:none;
+}
+h1,h2,h3,.serif{font-family:'Playfair Display',serif}
+
+/* ══ CUSTOM CURSOR ══ */
+.cursor{
+  position:fixed;width:8px;height:8px;
+  background:var(--gold2);border-radius:50%;
+  pointer-events:none;z-index:99999;
+  transform:translate(-50%,-50%);
+  /* NO transition — dot must follow mouse instantly */
+}
+.cursor-ring{
+  position:fixed;width:34px;height:34px;
+  border:1.5px solid var(--gold);border-radius:50%;
+  pointer-events:none;z-index:99998;
+  transform:translate(-50%,-50%);
+  opacity:.65;
+  transition:width .2s,height .2s,opacity .2s,border-color .2s;
+}
+.cursor-ring.hovered{
+  width:48px;height:48px;opacity:.3;border-color:var(--gold2);
+}
+
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+/* ══ ANIMATED BG MESH ══ */
+.bg-mesh{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 900px 700px at 15% 5%, rgba(26,108,240,0.1) 0%,transparent 65%),
+    radial-gradient(ellipse 700px 500px at 85% 90%, rgba(201,168,76,0.08) 0%,transparent 60%),
+    radial-gradient(ellipse 500px 400px at 50% 50%, rgba(0,212,255,0.04) 0%,transparent 70%);
+}
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);
+}
+.bg-noise{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px 200px;
+}
+
+/* ══ WRAP ══ */
+.wrap{position:relative;z-index:1}
+.footer{
+  background:var(--ink2);border-top:1px solid var(--rim);
+  padding:50px 48px 30px;margin-top:30px;
+  position:relative;z-index:1;
+}
+
+/* ══════════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════════ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:9000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:68px;
+  background:rgba(4,8,15,0.85);
+  backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:1px solid var(--rim);
+  transition:all .3s;
+}
+.nav.scrolled{
+  background:rgba(4,8,15,0.92);
+  border-bottom-color:var(--rim2);
+}
+.nav-brand{display:flex;align-items:center;gap:14px;cursor:pointer}
+.nav-emblem{
+  width:42px;height:42px;
+  background:linear-gradient(135deg,#b8860b,#e8c96a,#c9a84c);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  box-shadow:0 4px 20px rgba(201,168,76,0.4),inset 0 1px 0 rgba(255,255,255,0.3);
+  position:relative;overflow:hidden;
+}
+.nav-emblem::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.3),transparent);
+}
+.brand-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;letter-spacing:.5px}
+.brand-name em{font-style:italic;color:var(--gold2)}
+.nav-center{display:flex;gap:2px}
+.nav-item{
+  padding:8px 18px;border-radius:8px;
+  font-size:13.5px;font-weight:500;color:var(--text2);
+  border:none;background:none;cursor:pointer;
+  transition:all .2s;letter-spacing:.2px;
+}
+.nav-item:hover{color:var(--text);background:var(--glass2)}
+.nav-item.active{color:var(--gold2);background:rgba(201,168,76,.1)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn-outline{
+  padding:9px 22px;border-radius:9px;
+  border:1px solid var(--rim2);background:none;
+  color:var(--text);font-size:13.5px;font-weight:500;
+  cursor:pointer;transition:all .2s;
+  font-family:'Cabinet Grotesk',sans-serif;
+}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow)}
+.btn-gold{
+  padding:9px 24px;border-radius:9px;
+  background:linear-gradient(135deg,#b8860b,#e8c96a);
+  border:none;color:#1a0f00;
+  font-size:13.5px;font-weight:800;
+  cursor:pointer;transition:all .25s;
+  font-family:'Cabinet Grotesk',sans-serif;
+  box-shadow:0 4px 16px rgba(201,168,76,0.35);
+  letter-spacing:.3px;
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,0.5)}
+.nav-user-wrap{display:none;align-items:center;gap:12px}
+.nav-user-wrap.show{display:flex}
+.nav-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,#b8860b,#e8c96a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:800;color:#1a0f00;
+  font-family:'Playfair Display',serif;
+  cursor:pointer;border:2px solid rgba(201,168,76,0.4);
+  transition:all .2s;
+}
+.nav-avatar:hover{transform:scale(1.08);border-color:var(--gold2)}
+.nav-uname{font-size:14px;font-weight:600;color:var(--gold2)}
+.btn-logout{
+  padding:7px 16px;border-radius:8px;
+  border:1px solid var(--rim2);background:none;
+  color:var(--text2);font-size:13px;cursor:pointer;
+  transition:all .2s;font-family:'Cabinet Grotesk',sans-serif;
+}
+.btn-logout:hover{border-color:var(--rose);color:var(--rose);background:rgba(255,77,109,.1)}
+
+/* ══════════════════════════════════════════════
+   PAGES
+══════════════════════════════════════════════ */
+.page{display:none;animation:fadeUp .5s ease forwards}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════════════════════════════════════════════
+   HOME HERO
+══════════════════════════════════════════════ */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:100px 48px 60px;text-align:center;
+  position:relative;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:7px 20px;border-radius:30px;margin-bottom:32px;
+  border:1px solid rgba(201,168,76,.35);
+  background:rgba(201,168,76,.07);
+  font-size:12px;font-weight:700;color:var(--gold2);
+  letter-spacing:1.5px;text-transform:uppercase;
+  animation:fadeUp .6s .1s ease both;
+}
+.hero-eyebrow::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--gold2);animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero-title{
+  font-size:clamp(44px,7vw,96px);
+  font-weight:900;line-height:1.0;
+  letter-spacing:-2px;margin-bottom:24px;
+  animation:fadeUp .6s .2s ease both;
+}
+.hero-title .line1{display:block;color:var(--text)}
+.hero-title .line2{
+  display:block;font-style:italic;
+  background:linear-gradient(135deg,var(--gold),var(--gold2),var(--gold3),var(--cyan));
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{to{background-position:200% center}}
+.hero-sub{
+  font-size:17px;color:var(--text2);max-width:500px;
+  margin:0 auto 52px;line-height:1.7;font-weight:400;
+  animation:fadeUp .6s .3s ease both;
+}
+/* HERO STATS */
+.hero-stats{
+  display:flex;gap:0;margin-bottom:56px;
+  border:1px solid var(--rim2);border-radius:var(--r2);
+  overflow:hidden;backdrop-filter:blur(10px);
+  animation:fadeUp .6s .4s ease both;
+}
+.hstat{
+  padding:20px 36px;text-align:center;
+  border-right:1px solid var(--rim);
+  background:var(--glass);
+  transition:background .2s;
+}
+.hstat:last-child{border-right:none}
+.hstat:hover{background:var(--glass2)}
+.hstat-num{
+  font-family:'Playfair Display',serif;
+  font-size:30px;font-weight:900;
+  background:linear-gradient(135deg,var(--gold2),var(--gold3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hstat-lbl{font-size:11px;color:var(--text3);margin-top:3px;letter-spacing:.5px;text-transform:uppercase}
+
+/* ══════════════════════════════════════════════
+   SEARCH CARD
+══════════════════════════════════════════════ */
+.search-shell{
+  width:100%;max-width:960px;
+  background:rgba(8,15,30,0.85);
+  border:1px solid var(--rim2);
+  border-radius:var(--r3);
+  padding:32px 36px;
+  backdrop-filter:blur(30px);
+  box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(201,168,76,.06),inset 0 1px 0 rgba(255,255,255,.06);
+  animation:fadeUp .6s .5s ease both;
+}
+.trip-pills{display:flex;gap:6px;margin-bottom:26px}
+.pill{
+  padding:8px 22px;border-radius:30px;
+  font-size:13px;font-weight:600;letter-spacing:.2px;
+  border:1px solid var(--rim2);background:none;
+  color:var(--text2);cursor:pointer;transition:all .22s;
+  font-family:'Cabinet Grotesk',sans-serif;
+}
+.pill.active{
+  background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(232,201,106,.1));
+  border-color:rgba(201,168,76,.6);color:var(--gold2);
+}
+.pill:hover:not(.active){color:var(--text);border-color:var(--rim3);background:var(--glass)}
+.search-row1{
+  display:grid;
+  grid-template-columns:1fr 44px 1fr 1fr 1fr;
+  gap:12px;align-items:end;margin-bottom:14px;
+}
+.sf{display:flex;flex-direction:column;gap:7px}
+.sf-label{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.airport-picker{
+  background:var(--glass2);border:1px solid var(--rim);
+  border-radius:var(--r);padding:13px 16px;cursor:pointer;
+  transition:all .2s;position:relative;
+  group:hover;
+}
+.airport-picker:hover{border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.05)}
+.ap-code{
+  font-family:'Playfair Display',serif;
+  font-size:26px;font-weight:700;color:var(--gold2);line-height:1;
+}
+.ap-city{font-size:12px;color:var(--text3);margin-top:3px}
+.sf-input{
+  background:var(--glass2);border:1px solid var(--rim);
+  border-radius:var(--r);padding:13px 16px;
+  color:var(--text);font-size:14px;width:100%;
+  transition:border .2s;
+  font-family:'Cabinet Grotesk',sans-serif;
+}
+.sf-input:focus{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.04);outline:none}
+.sf-input option{background:#080f1e}
+.swap-wrap{display:flex;align-items:flex-end;justify-content:center}
+.swap{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,#1a4080,#1a6cf0);
+  border:none;color:#fff;font-size:17px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:transform .4s ease;
+  box-shadow:0 4px 16px rgba(26,108,240,.4);
+  flex-shrink:0;
+}
+.swap:hover{transform:rotate(180deg)}
+.search-row2{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto;
+  gap:12px;align-items:end;
+}
+.pax-card{
+  background:var(--glass2);border:1px solid var(--rim);
+  border-radius:var(--r);padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.pax-lbl{font-size:12px;color:var(--text3)}
+.pax-ctrl{display:flex;align-items:center;gap:10px}
+.pax-val{font-size:17px;font-weight:800;min-width:22px;text-align:center}
+.pax-btn{
+  width:26px;height:26px;border-radius:6px;
+  background:rgba(201,168,76,.15);
+  border:1px solid rgba(201,168,76,.4);
+  color:var(--gold2);font-size:17px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;
+}
+.pax-btn:hover{background:rgba(201,168,76,.3)}
+.btn-search{
+  padding:14px 36px;
+  background:linear-gradient(135deg,#b8860b,#d4a020,#e8c96a);
+  border:none;border-radius:var(--r);
+  color:#1a0f00;font-size:15px;font-weight:900;
+  letter-spacing:.4px;cursor:pointer;
+  transition:all .25s;
+  box-shadow:0 6px 24px rgba(201,168,76,.45);
+  white-space:nowrap;
+  font-family:'Cabinet Grotesk',sans-serif;
+  position:relative;overflow:hidden;
+}
+.btn-search::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);
+  opacity:0;transition:opacity .2s;
+}
+.btn-search:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(201,168,76,.55)}
+.btn-search:hover::before{opacity:1}
+
+/* ══════════════════════════════════════════════
+   DESTINATIONS
+══════════════════════════════════════════════ */
+.section{padding:80px 48px}
+.sec-eyebrow{
+  font-size:11px;color:var(--gold);letter-spacing:2px;
+  text-transform:uppercase;font-weight:700;
+  margin-bottom:12px;
+}
+.sec-title{
+  font-size:clamp(28px,4vw,44px);font-weight:900;
+  line-height:1.1;letter-spacing:-1px;margin-bottom:6px;
+}
+.sec-title em{font-style:italic;color:var(--gold2)}
+.sec-sub{font-size:14px;color:var(--text2);max-width:380px;line-height:1.6}
+.sec-header{
+  display:flex;align-items:flex-end;
+  justify-content:space-between;margin-bottom:40px;
+}
+.dest-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:220px 220px;gap:16px}
+.dest-card{
+  border-radius:var(--r2);overflow:hidden;
+  position:relative;cursor:pointer;
+  border:1px solid var(--rim);
+  transition:all .3s ease;
+}
+.dest-card:hover{transform:scale(1.015);border-color:rgba(201,168,76,.4);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.dest-card.tall{grid-row:span 2}
+.dest-bg{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .5s ease;
+}
+.dest-card:hover .dest-bg{transform:scale(1.05)}
+.dest-emoji-big{font-size:80px;filter:drop-shadow(0 10px 30px rgba(0,0,0,.4))}
+.dest-gradient{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(4,8,15,.95) 0%,rgba(4,8,15,.4) 50%,transparent 100%);
+}
+.dest-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:22px;
+}
+.dest-city{font-size:20px;font-weight:800;letter-spacing:-.3px;margin-bottom:2px}
+.dest-country{font-size:12px;color:var(--text2);margin-bottom:8px}
+.dest-tag{
+  display:inline-block;padding:4px 12px;border-radius:20px;
+  font-size:11px;font-weight:700;letter-spacing:.3px;
+  background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);
+  color:var(--gold2);
+}
+.dest-price-big{font-size:26px;font-weight:900;font-family:'Playfair Display',serif;color:var(--gold2);margin-top:4px}
+
+/* ══ FEATURES ══ */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.feat{
+  background:var(--glass);border:1px solid var(--rim);
+  border-radius:var(--r2);padding:28px;
+  transition:all .25s;position:relative;overflow:hidden;
+}
+.feat::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(201,168,76,.06),transparent);
+  opacity:0;transition:opacity .25s;
+}
+.feat:hover{border-color:rgba(201,168,76,.3);transform:translateY(-4px)}
+.feat:hover::before{opacity:1}
+.feat-icon{
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:18px;
+  border:1px solid var(--rim2);background:var(--glass2);
+}
+.feat-title{font-size:16px;font-weight:800;margin-bottom:8px;letter-spacing:-.2px}
+.feat-desc{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* ══════════════════════════════════════════════
+   RESULTS PAGE
+══════════════════════════════════════════════ */
+.results-topbar{
+  background:rgba(4,8,15,.9);
+  border-bottom:1px solid var(--rim2);
+  padding:22px 48px;
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+  margin-top:68px;
+}
+.res-route{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:700;
+}
+.res-route span{color:var(--gold2)}
+.res-meta{font-size:13px;color:var(--text3);margin-top:4px}
+.sort-strip{display:flex;gap:6px;flex-wrap:wrap}
+.sort-pill{
+  padding:7px 18px;border-radius:30px;
+  font-size:13px;border:1px solid var(--rim);
+  background:none;color:var(--text2);cursor:pointer;
+  transition:all .2s;font-family:'Cabinet Grotesk',sans-serif;
+}
+.sort-pill.active{
+  background:rgba(201,168,76,.12);
+  border-color:rgba(201,168,76,.5);color:var(--gold2);
+}
+.results-body{
+  display:grid;grid-template-columns:270px 1fr;
+  gap:22px;padding:28px 48px;align-items:start;
+}
+/* FILTER SIDEBAR */
+.filter-panel{
+  background:var(--glass);border:1px solid var(--rim);
+  border-radius:var(--r2);padding:22px;
+  position:sticky;top:140px;
+}
+.fp-title{
+  font-size:14px;font-weight:800;
+  margin-bottom:18px;letter-spacing:.2px;
+  display:flex;align-items:center;gap:8px;
+}
+.fp-section{border-top:1px solid var(--rim);padding-top:14px;margin-bottom:14px}
+.fp-sec-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:700}
+.fp-option{
+  display:flex;align-items:center;gap:10px;
+  padding:6px 0;cursor:pointer;font-size:13.5px;
+  transition:color .15s;
+}
+.fp-option:hover{color:var(--gold2)}
+.fp-check{
+  width:17px;height:17px;border-radius:5px;
+  border:1.5px solid var(--rim3);background:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;transition:all .15s;flex-shrink:0;
+}
+.fp-check.on{background:var(--gold);border-color:var(--gold);color:#1a0f00;font-weight:700}
+.price-track{width:100%;accent-color:var(--gold);cursor:pointer;margin-top:6px}
+.price-rng{display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-top:5px}
+
+/* FLIGHT CARDS */
+.flight-stack{display:flex;flex-direction:column;gap:14px}
+.fc{
+  background:var(--glass);border:1px solid var(--rim);
+  border-radius:var(--r2);padding:22px 26px;
+  display:grid;grid-template-columns:170px 1fr 160px;
+  align-items:center;gap:20px;
+  cursor:pointer;transition:all .25s;
+  position:relative;overflow:hidden;
+}
+.fc::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(to bottom,var(--gold),var(--gold2));
+  opacity:0;transition:opacity .2s;
+}
+.fc:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.04);transform:translateX(4px)}
+.fc:hover::before{opacity:1}
+.fc.chosen{border-color:rgba(26,108,240,.6);background:rgba(26,108,240,.07)}
+.fc.chosen::before{background:linear-gradient(to bottom,var(--blue),var(--blue2));opacity:1}
+.airline-col{display:flex;align-items:center;gap:12px}
+.al-badge{
+  width:46px;height:46px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;flex-shrink:0;
+  font-family:'Playfair Display',serif;
+  border:1px solid var(--rim2);
+}
+.al-pia{background:linear-gradient(135deg,#0a2040,#1a4080)}
+.al-em{background:linear-gradient(135deg,#4a0006,#8b0014)}
+.al-qr{background:linear-gradient(135deg,#2a0010,#5a0022)}
+.al-ai{background:linear-gradient(135deg,#0a2010,#1a4020)}
+.al-ek{background:linear-gradient(135deg,#0a0a30,#1a1a60)}
+.al-sg{background:linear-gradient(135deg,#1a0f00,#4a2e00)}
+.al-name{font-size:14px;font-weight:700;letter-spacing:-.1px}
+.al-num{font-size:11px;color:var(--text3);margin-top:2px}
+.route-col{display:flex;align-items:center;gap:14px}
+.tm{text-align:center;flex-shrink:0}
+.tm-time{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1}
+.tm-code{font-size:11px;color:var(--text3);margin-top:3px;letter-spacing:.5px}
+.route-mid{flex:1;text-align:center}
+.dur{font-size:12px;color:var(--text3);margin-bottom:7px}
+.route-track{display:flex;align-items:center;gap:4px}
+.rt-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.rt-line{flex:1;height:1px;background:linear-gradient(90deg,var(--gold),var(--text3))}
+.rt-plane{font-size:14px;flex-shrink:0;filter:drop-shadow(0 0 4px var(--gold-glow))}
+.stops-label{font-size:11px;color:var(--text3);margin-top:5px}
+.stops-label.direct{color:var(--emerald)}
+.price-col{text-align:right}
+.cls-tag{
+  display:inline-block;padding:3px 10px;border-radius:20px;
+  font-size:10px;font-weight:700;letter-spacing:.5px;
+  background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);
+  color:var(--gold2);margin-bottom:8px;text-transform:uppercase;
+}
+.price-amt{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:700;
+  background:linear-gradient(135deg,var(--gold2),var(--gold3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.price-pp{font-size:11px;color:var(--text3)}
+.btn-pick{
+  display:block;margin-top:10px;
+  padding:9px 22px;
+  background:linear-gradient(135deg,#1a4080,#1a6cf0);
+  border:none;border-radius:9px;
+  color:#fff;font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .2s;
+  font-family:'Cabinet Grotesk',sans-serif;
+  box-shadow:0 4px 14px rgba(26,108,240,.3);
+}
+.btn-pick:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,108,240,.45)}
+
+/* NO RESULTS */
+.no-results{
+  text-align:center;padding:60px;
+  background:var(--glass);border:1px solid var(--rim);
+  border-radius:var(--r2);color:var(--text2);
+}
+
+/* ══════════════════════════════════════════════
+   BOOKING PAGE
+══════════════════════════════════════════════ */
+.booking-wrap{
+  display:grid;grid-template-columns:1fr 380px;
+  gap:26px;padding:30px 48px;align-items:start;
+  margin-top:68px;
+}
+.bk-main{}
+.bk-sidebar{position:sticky;top:98px}
+.card{
+  background:var(--glass);border:1px solid var(--rim);
+  border-radius:var(--r2);padding:26px;margin-bottom:22px;
+}
+.card-title{
+  font-size:16px;font-weight:800;margin-bottom:22px;
+  display:flex;align-items:center;gap:10px;
+  letter-spacing:-.2px;
+}
+.step-badge{
+  width:30px;height:30px;border-radius:9px;
+  background:linear-gradient(135deg,#b8860b,#e8c96a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;color:#1a0f00;flex-shrink:0;
+}
+.fg{display:flex;flex-direction:column;gap:6px}
+.flbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.finput{
+  background:var(--glass2);border:1px solid var(--rim);
+  border-radius:var(--r);padding:12px 15px;
+  color:var(--text);font-size:14px;width:100%;
+  transition:border .2s;font-family:'Cabinet Grotesk',sans-serif;
+}
+.finput:focus{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.04);outline:none}
+.finput option{background:#080f1e}
+.fsel{
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 5 5-5' stroke='%236b5f50' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+
+/* SEAT MAP */
+.plane-body{
+  background:var(--glass2);border:1px solid var(--rim2);
+  border-radius:var(--r2);padding:20px;overflow-x:auto;
+}
+.plane-front{
+  width:70px;height:36px;
+  background:linear-gradient(to bottom,rgba(201,168,76,.15),transparent);
+  border-radius:50% 50% 0 0;margin:0 auto 6px;
+  border:1px solid rgba(201,168,76,.2);border-bottom:none;
+}
+.cabin-lbl{
+  font-size:10px;color:var(--text3);text-align:center;
+  text-transform:uppercase;letter-spacing:1px;margin:10px 0 8px;
+  font-weight:700;
+}
+.seat-row{display:flex;align-items:center;justify-content:center;gap:5px;margin-bottom:5px}
+.rnum{font-size:10px;color:var(--text3);width:20px;text-align:right;flex-shrink:0}
+.seat{
+  width:30px;height:30px;
+  border-radius:7px 7px 4px 4px;
+  border:1px solid;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9.5px;font-weight:700;
+  transition:all .15s;flex-shrink:0;
+  font-family:'Cabinet Grotesk',sans-serif;
+}
+.seat.av{background:rgba(26,108,240,.15);border-color:rgba(26,108,240,.4);color:#4d8fff;cursor:pointer}
+.seat.av:hover{background:rgba(26,108,240,.35);transform:translateY(-3px);box-shadow:0 4px 12px rgba(26,108,240,.3)}
+.seat.tk{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:#2a2a3a;cursor:not-allowed}
+.seat.sel{background:var(--gold);border-color:var(--gold);color:#1a0f00;transform:translateY(-3px);box-shadow:0 4px 14px var(--gold-glow)}
+.seat.bz{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.4);color:var(--gold2);cursor:pointer}
+.seat.bz:hover{background:rgba(201,168,76,.3);transform:translateY(-3px)}
+.seat.bz.sel{background:var(--gold);border-color:var(--gold);color:#1a0f00}
+.aisle{width:22px;flex-shrink:0}
+.seat-legend{display:flex;gap:18px;margin-top:14px;justify-content:center}
+.leg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.leg-sq{width:14px;height:14px;border-radius:4px;border:1px solid}
+
+/* SUMMARY SIDEBAR */
+.sum-flight-box{
+  background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(232,201,106,.05));
+  border:1px solid rgba(201,168,76,.25);
+  border-radius:var(--r);padding:18px;margin-bottom:16px;
+}
+.sum-codes{
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+}
+.sum-code{
+  font-family:'Playfair Display',serif;
+  font-size:32px;font-weight:700;color:var(--gold2);
+}
+.sum-arrow{font-size:18px;color:var(--text3)}
+.sum-dets{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sd{font-size:12px}
+.sd-l{color:var(--text3)}
+.sd-v{font-weight:700;margin-top:1px}
+.price-lines{border-top:1px solid var(--rim);padding-top:14px}
+.pline{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--text2)}
+.pline.total{
+  font-size:17px;font-weight:800;color:var(--gold2);
+  border-top:1px solid var(--rim2);padding-top:10px;margin-top:6px;
+}
+.btn-confirm{
+  width:100%;padding:15px;margin-top:16px;
+  background:linear-gradient(135deg,#b8860b,#d4a020,#e8c96a);
+  border:none;border-radius:var(--r);
+  color:#1a0f00;font-size:16px;font-weight:900;
+  cursor:pointer;transition:all .25s;
+  box-shadow:0 6px 24px rgba(201,168,76,.4);
+  font-family:'Cabinet Grotesk',sans-serif;
+  letter-spacing:.3px;
+}
+.btn-confirm:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(201,168,76,.55)}
+.ssl-badge{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font-size:11px;color:var(--text3);margin-top:10px;
+}
+
+/* ══════════════════════════════════════════════
+   CONFIRMATION / E-TICKET
+══════════════════════════════════════════════ */
+.confirm-wrap{max-width:720px;margin:0 auto;padding:60px 48px}
+.conf-anim{text-align:center;margin-bottom:40px}
+.conf-icon{
+  font-size:72px;margin-bottom:18px;
+  animation:confBounce .6s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes confBounce{
+  0%{transform:scale(0) rotate(-15deg);opacity:0}
+  60%{transform:scale(1.15) rotate(5deg)}
+  100%{transform:scale(1) rotate(0);opacity:1}
+}
+.conf-title{font-size:38px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
+.conf-sub{font-size:15px;color:var(--text2);line-height:1.6}
+.e-ticket{
+  background:var(--glass);
+  border:1px solid var(--rim2);
+  border-radius:24px;overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+.et-rainbow{height:5px;background:linear-gradient(90deg,#c9a84c,#e8c96a,#4d8fff,#00d4ff,#00e5a0,#c9a84c);background-size:200% auto;animation:rainbow 3s linear infinite}
+@keyframes rainbow{to{background-position:200% center}}
+.et-header{
+  padding:28px 34px;border-bottom:1px dashed rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.et-logo-wrap{display:flex;align-items:center;gap:12px}
+.et-logo-icon{
+  width:40px;height:40px;border-radius:11px;
+  background:linear-gradient(135deg,#b8860b,#e8c96a);
+  display:flex;align-items:center;justify-content:center;font-size:19px;
+  box-shadow:0 4px 14px rgba(201,168,76,.35);
+}
+.et-logo-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:900}
+.et-logo-name em{font-style:italic;color:var(--gold2)}
+.et-ref-wrap{text-align:right}
+.et-ref-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.et-ref{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:700;letter-spacing:2px;
+  background:linear-gradient(135deg,var(--gold2),var(--gold3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.et-body{padding:32px 34px}
+.et-route{display:flex;align-items:center;gap:20px;margin-bottom:30px}
+.et-city{
+  font-family:'Playfair Display',serif;
+  font-size:52px;font-weight:900;line-height:1;
+}
+.et-city-name{font-size:13px;color:var(--text3);margin-top:5px}
+.et-route-mid{flex:1;text-align:center}
+.et-track{display:flex;align-items:center;gap:8px;justify-content:center}
+.et-dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.et-line{flex:1;height:1px;background:linear-gradient(90deg,var(--gold),var(--text3))}
+.et-plane{font-size:22px}
+.et-dur{font-size:12px;color:var(--text3);margin-top:7px}
+.et-dets{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:16px;border-top:1px dashed rgba(255,255,255,.1);
+  padding-top:26px;
+}
+.etd{text-align:center}
+.etd-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.etd-v{font-size:15px;font-weight:800;font-family:'Playfair Display',serif}
+.et-footer{
+  background:var(--glass2);border-top:1px solid var(--rim);
+  padding:16px 34px;display:flex;align-items:center;
+  justify-content:space-between;font-size:12px;color:var(--text3);
+}
+.qr-box{
+  width:56px;height:56px;background:var(--glass3);
+  border-radius:10px;border:1px solid var(--rim2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;
+}
+.conf-btns{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.btn-gold-outline{
+  padding:12px 28px;border-radius:var(--r);
+  border:1.5px solid var(--gold);background:none;
+  color:var(--gold2);font-size:14px;font-weight:700;cursor:pointer;
+  transition:all .2s;font-family:'Cabinet Grotesk',sans-serif;
+}
+.btn-gold-outline:hover{background:var(--gold-glow);transform:translateY(-1px)}
+.btn-ghost2{
+  padding:12px 28px;border-radius:var(--r);
+  border:1px solid var(--rim2);background:none;
+  color:var(--text2);font-size:14px;cursor:pointer;
+  transition:all .2s;font-family:'Cabinet Grotesk',sans-serif;
+}
+.btn-ghost2:hover{background:var(--glass2);color:var(--text)}
+
+/* ══════════════════════════════════════════════
+   MY BOOKINGS
+══════════════════════════════════════════════ */
+.bookings-page{padding:36px 48px;margin-top:68px}
+.bk-list{display:flex;flex-direction:column;gap:16px;margin-top:30px}
+.bk-item{
+  background:var(--glass);border:1px solid var(--rim);
+  border-radius:var(--r2);padding:22px 26px;
+  display:grid;grid-template-columns:1fr auto;
+  align-items:center;gap:20px;transition:all .2s;
+  position:relative;overflow:hidden;
+}
+.bk-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(to bottom,var(--gold),var(--gold2));
+}
+.bk-item:hover{border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.03)}
+.bki-ref{font-size:12px;color:var(--text3);margin-bottom:5px;letter-spacing:.5px}
+.bki-route{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:6px}
+.bki-meta{display:flex;gap:16px;font-size:13px;color:var(--text2);flex-wrap:wrap}
+.bki-price{
+  font-family:'Playfair Display',serif;font-size:26px;font-weight:700;
+  background:linear-gradient(135deg,var(--gold2),var(--gold3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:6px;text-align:right;
+}
+.status{
+  display:inline-block;padding:4px 14px;border-radius:20px;
+  font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+}
+.status-confirmed{background:rgba(0,229,160,.1);color:#00e5a0;border:1px solid rgba(0,229,160,.3)}
+.empty-bk{
+  text-align:center;padding:70px;
+  background:var(--glass);border:1px solid var(--rim);
+  border-radius:var(--r2);
+}
+.empty-bk-icon{font-size:56px;margin-bottom:14px;opacity:.6}
+
+/* ══════════════════════════════════════════════
+   AUTH MODAL
+══════════════════════════════════════════════ */
+.auth-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.85);
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(10px);
+}
+.auth-overlay.open{display:flex}
+.auth-box{
+  background:var(--ink2);
+  border:1px solid var(--rim2);
+  border-radius:26px;width:460px;max-width:96vw;
+  overflow:hidden;position:relative;
+  box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(201,168,76,.1);
+  animation:authSlide .35s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes authSlide{from{transform:scale(.9) translateY(30px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.auth-rainbow{height:4px;background:linear-gradient(90deg,#c9a84c,#e8c96a,#4d8fff,#00d4ff,#c9a84c);background-size:200%;animation:rainbow 3s linear infinite}
+.auth-tabs{display:flex;border-bottom:1px solid var(--rim)}
+.atab{
+  flex:1;padding:16px;text-align:center;
+  font-size:15px;font-weight:700;
+  background:none;border:none;color:var(--text2);
+  cursor:pointer;transition:all .2s;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  font-family:'Cabinet Grotesk',sans-serif;
+}
+.atab.on{color:var(--gold2);border-bottom-color:var(--gold2)}
+.auth-body{padding:30px 32px 32px}
+.aform{display:none}
+.aform.on{display:block}
+.auth-h{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:5px}
+.auth-h em{font-style:italic;color:var(--gold2)}
+.auth-p{font-size:13px;color:var(--text2);margin-bottom:24px}
+.aerr,.aok{
+  padding:11px 15px;border-radius:var(--r);
+  font-size:13px;margin-bottom:16px;display:none;
+}
+.aerr{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);color:#ff8fa3}
+.aok{background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.25);color:#6ee7b7}
+.aerr.show,.aok.show{display:block}
+.afield{margin-bottom:16px}
+.albl{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:6px;display:block}
+.ainput{
+  background:var(--glass2);border:1px solid var(--rim);
+  border-radius:var(--r);padding:13px 16px;
+  color:var(--text);font-size:14px;width:100%;
+  transition:border .2s;font-family:'Cabinet Grotesk',sans-serif;
+}
+.ainput:focus{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.04);outline:none}
+.ainput-wrap{position:relative}
+.ainput-wrap .ainput{padding-right:46px}
+.aeye{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--text3);font-size:17px;cursor:pointer;
+}
+.aeye:hover{color:var(--text2)}
+.agrid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.aforgot{text-align:right;margin-top:-10px;margin-bottom:16px}
+.aforgot a{font-size:12px;color:var(--gold2);cursor:pointer;font-weight:600}
+.aforgot a:hover{text-decoration:underline}
+.str-bar{height:4px;border-radius:2px;background:var(--rim);overflow:hidden;margin-top:6px}
+.str-fill{height:100%;border-radius:2px;transition:all .3s;width:0}
+.str-lbl{font-size:11px;margin-top:4px}
+.auth-btn{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,#b8860b,#d4a020,#e8c96a);
+  border:none;border-radius:var(--r);
+  color:#1a0f00;font-size:15px;font-weight:900;
+  cursor:pointer;transition:all .25s;
+  font-family:'Cabinet Grotesk',sans-serif;
+  box-shadow:0 6px 22px rgba(201,168,76,.4);
+  margin-bottom:16px;
+}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,.5)}
+.adivider{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.adivider::before,.adivider::after{content:'';flex:1;height:1px;background:var(--rim)}
+.adivider span{font-size:12px;color:var(--text3);white-space:nowrap}
+.asocial{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.asocial-btn{
+  padding:10px;border-radius:var(--r);
+  border:1px solid var(--rim2);background:none;
+  color:var(--text);font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s;font-family:'Cabinet Grotesk',sans-serif;
+}
+.asocial-btn:hover{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.4);color:var(--gold2)}
+.aswitch{text-align:center;font-size:13px;color:var(--text2)}
+.aswitch a{color:var(--gold2);cursor:pointer;font-weight:700}
+.aswitch a:hover{text-decoration:underline}
+.auth-close{
+  position:absolute;top:12px;right:16px;
+  background:none;border:none;color:var(--text3);
+  font-size:22px;cursor:pointer;transition:color .15s;
+}
+.auth-close:hover{color:var(--text)}
+
+/* ══ AIRPORT MODAL ══ */
+.apt-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.8);
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+}
+.apt-overlay.open{display:flex}
+.apt-box{
+  background:var(--ink2);border:1px solid var(--rim2);
+  border-radius:22px;width:400px;max-width:95vw;
+  padding:26px;
+  display:flex;flex-direction:column;
+  max-height:85vh;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
+  animation:authSlide .3s ease both;
+}
+.apt-title{font-size:16px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.apt-search{
+  background:var(--glass2);border:1px solid var(--rim2);
+  border-radius:var(--r);padding:12px 15px;
+  color:var(--text);font-size:14px;width:100%;margin-bottom:12px;
+  font-family:'Cabinet Grotesk',sans-serif;
+}
+.apt-search:focus{border-color:rgba(201,168,76,.6);outline:none}
+.apt-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:5px}
+.apt-opt{
+  padding:12px 15px;border-radius:var(--r);
+  cursor:pointer;border:1px solid transparent;
+  transition:all .15s;display:flex;align-items:center;gap:12px;
+}
+.apt-opt:hover{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.3)}
+.apt-code{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold2);width:46px;flex-shrink:0}
+.apt-city{font-size:13px;font-weight:600}
+.apt-country{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* ══ TOAST ══ */
+.toast{
+  position:fixed;bottom:32px;right:32px;z-index:99999;
+  background:var(--ink3);border:1px solid var(--rim2);
+  border-radius:var(--r);padding:14px 22px;
+  font-size:14px;display:none;align-items:center;gap:10px;
+  box-shadow:0 10px 40px rgba(0,0,0,.5);
+  animation:toastIn .3s ease;
+  max-width:340px;
+}
+.toast.on{display:flex}
+@keyframes toastIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ══ LOADING ══ */
+.loading-veil{
+  position:fixed;inset:0;z-index:99998;
+  background:rgba(4,8,15,.9);
+  display:none;align-items:center;justify-content:center;
+  flex-direction:column;gap:18px;backdrop-filter:blur(6px);
+}
+.loading-veil.on{display:flex}
+.ld-spinner{
+  width:52px;height:52px;
+  border:3px solid var(--rim2);border-top-color:var(--gold);
+  border-radius:50%;animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-text{font-size:14px;color:var(--text2)}
+.ld-sub{font-size:12px;color:var(--text3)}
+
+/* ══ FOOTER ══ */
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:36px}
+.fb-desc{font-size:13px;color:var(--text3);margin-top:12px;line-height:1.8;max-width:240px}
+.fc-title{font-size:13px;font-weight:800;margin-bottom:14px;letter-spacing:.3px;color:var(--gold2)}
+.fc-links{display:flex;flex-direction:column;gap:9px}
+.fc-link{font-size:13px;color:var(--text3);cursor:pointer;transition:color .15s}
+.fc-link:hover{color:var(--gold2)}
+.footer-bottom{
+  border-top:1px solid var(--rim);padding-top:20px;
+  display:flex;justify-content:space-between;
+  align-items:center;font-size:12px;color:var(--text3);
+}
+.footer-gold{
+  font-family:'Playfair Display',serif;
+  font-size:14px;color:var(--gold);letter-spacing:.5px;
+}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .nav{padding:0 18px}
+  .nav-center{display:none}
+  .hero{padding:90px 20px 50px}
+  .hero-stats{flex-direction:column;width:100%}
+  .hstat{border-right:none;border-bottom:1px solid var(--rim)}
+  .search-shell{padding:20px}
+  .search-row1{grid-template-columns:1fr 36px 1fr;grid-template-rows:auto auto}
+  .search-row2{grid-template-columns:1fr 1fr}
+  .btn-search{grid-column:1/-1}
+  .section{padding:50px 20px}
+  .dest-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .dest-card.tall{grid-row:auto}
+  .features-grid{grid-template-columns:1fr}
+  .results-body{grid-template-columns:1fr;padding:16px 20px}
+  .filter-panel{display:none}
+  .results-topbar{padding:18px 20px;margin-top:68px}
+  .booking-wrap{grid-template-columns:1fr;padding:20px}
+  .bk-sidebar{position:static}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .bookings-page{padding:20px 18px}
+  .confirm-wrap{padding:40px 20px}
+  .et-dets{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curRing"></div>
+
+<!-- BG -->
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+<div class="bg-noise"></div>
+
+<!-- LOADING -->
+<div class="loading-veil" id="loadVeil">
+  <div class="ld-spinner"></div>
+  <div class="ld-text" id="ldText">Searching best fares...</div>
+  <div class="ld-sub">Comparing 500+ airlines</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIco">✅</span><span id="toastTxt"></span>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <div class="auth-rainbow"></div>
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <div class="auth-tabs">
+      <button class="atab on" id="tabSI" onclick="switchAuth('si')">Sign In</button>
+      <button class="atab" id="tabRG" onclick="switchAuth('rg')">Register</button>
+    </div>
+    <div class="auth-body">
+
+      <!-- SIGN IN -->
+      <div class="aform on" id="formSI">
+        <div class="auth-h">Welcome <em>Back</em> 👋</div>
+        <div class="auth-p">Sign in to your SkyFly account</div>
+        <div class="aerr" id="siErr"></div>
+        <div class="aok" id="siOk"></div>
+        <div class="afield">
+          <label class="albl">Email Address</label>
+          <input type="email" class="ainput" id="si-email" placeholder="ahmed@email.com" autocomplete="email"/>
+        </div>
+        <div class="afield">
+          <label class="albl">Password</label>
+          <div class="ainput-wrap">
+            <input type="password" class="ainput" id="si-pass" placeholder="Your password" autocomplete="current-password"/>
+            <button class="aeye" onclick="togglePw('si-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="aforgot"><a onclick="forgotPw()">Forgot password?</a></div>
+        <button class="auth-btn" onclick="doSignIn()">Sign In →</button>
+        <div class="adivider"><span>or continue with</span></div>
+        <div class="asocial">
+          <button class="asocial-btn" onclick="socialAuth('Google')">🌐 Google</button>
+          <button class="asocial-btn" onclick="socialAuth('Facebook')">📘 Facebook</button>
+        </div>
+        <div class="aswitch">No account? <a onclick="switchAuth('rg')">Register now</a></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="aform" id="formRG">
+        <div class="auth-h">Create <em>Account</em> ✈</div>
+        <div class="auth-p">Join SkyFly and travel the world</div>
+        <div class="aerr" id="rgErr"></div>
+        <div class="aok" id="rgOk"></div>
+        <div class="agrid2">
+          <div class="afield">
+            <label class="albl">First Name</label>
+            <input type="text" class="ainput" id="rg-fn" placeholder="Ahmed"/>
+          </div>
+          <div class="afield">
+            <label class="albl">Last Name</label>
+            <input type="text" class="ainput" id="rg-ln" placeholder="Khan"/>
+          </div>
+        </div>
+        <div class="afield">
+          <label class="albl">Email</label>
+          <input type="email" class="ainput" id="rg-em" placeholder="ahmed@email.com"/>
+        </div>
+        <div class="afield">
+          <label class="albl">Phone</label>
+          <input type="tel" class="ainput" id="rg-ph" placeholder="+92 300 1234567"/>
+        </div>
+        <div class="afield">
+          <label class="albl">Password</label>
+          <div class="ainput-wrap">
+            <input type="password" class="ainput" id="rg-pw" placeholder="Min 8 characters" oninput="strCheck(this.value)" autocomplete="new-password"/>
+            <button class="aeye" onclick="togglePw('rg-pw',this)">👁</button>
+          </div>
+          <div class="str-bar"><div class="str-fill" id="strFill"></div></div>
+          <div class="str-lbl" id="strLbl" style="color:var(--text3)"></div>
+        </div>
+        <div class="afield">
+          <label class="albl">Confirm Password</label>
+          <div class="ainput-wrap">
+            <input type="password" class="ainput" id="rg-cp" placeholder="Repeat password" autocomplete="new-password"/>
+            <button class="aeye" onclick="togglePw('rg-cp',this)">👁</button>
+          </div>
+        </div>
+        <button class="auth-btn" onclick="doRegister()">Create Account →</button>
+        <div class="adivider"><span>or sign up with</span></div>
+        <div class="asocial">
+          <button class="asocial-btn" onclick="socialAuth('Google')">🌐 Google</button>
+          <button class="asocial-btn" onclick="socialAuth('Facebook')">📘 Facebook</button>
+        </div>
+        <div class="aswitch">Have an account? <a onclick="switchAuth('si')">Sign in</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AIRPORT MODAL -->
+<div class="apt-overlay" id="aptOverlay">
+  <div class="apt-box">
+    <div class="apt-title">🌐 Select Airport</div>
+    <input type="text" class="apt-search" id="aptSearch" placeholder="Search city, country or IATA code…" oninput="filterApt()" autocomplete="off"/>
+    <div class="apt-list" id="aptList"></div>
+  </div>
+</div>
+
+<!-- ══════════ NAVBAR ══════════ -->
+<nav class="nav" id="mainNav">
+  <div class="nav-brand" onclick="goPage('home')">
+    <div class="nav-emblem">✈</div>
+    <div class="brand-name">Sky<em>Fly</em></div>
+  </div>
+  <div class="nav-center">
+    <button class="nav-item active" onclick="goPage('home',this)">Home</button>
+    <button class="nav-item" onclick="goPage('results',this)">Flights</button>
+    <button class="nav-item" onclick="goPage('bookings',this)">My Bookings</button>
+    <button class="nav-item" onclick="goPage('about',this)">About</button>
+  </div>
+  <div class="nav-right">
+    <div id="navBtns" style="display:flex;gap:10px">
+      <button class="btn-outline" onclick="openAuth('si')">Sign In</button>
+      <button class="btn-gold" onclick="openAuth('rg')">Register</button>
+    </div>
+    <div class="nav-user-wrap" id="navUser">
+      <div class="nav-avatar" id="navAv" onclick="goPage('bookings')">A</div>
+      <span class="nav-uname" id="navUname">User</span>
+      <button class="btn-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ══════════════════════ PAGE: HOME ══════════════════════ -->
+<div class="page active" id="page-home">
+
+  <section class="hero">
+    <div class="hero-eyebrow">✦ 500+ Airlines Worldwide</div>
+    <h1 class="hero-title">
+      <span class="line1">Explore the World,</span>
+      <span class="line2">One Flight at a Time</span>
+    </h1>
+    <p class="hero-sub">Search, compare and book flights in seconds. Best price guarantee with 24/7 luxury support.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-num">2M+</div><div class="hstat-lbl">Happy Travelers</div></div>
+      <div class="hstat"><div class="hstat-num">500+</div><div class="hstat-lbl">Airlines</div></div>
+      <div class="hstat"><div class="hstat-num">150+</div><div class="hstat-lbl">Countries</div></div>
+      <div class="hstat"><div class="hstat-num">99%</div><div class="hstat-lbl">Satisfaction</div></div>
+    </div>
+
+    <!-- SEARCH SHELL -->
+    <div class="search-shell">
+      <div class="trip-pills">
+        <button class="pill active" onclick="setTrip(this,'one')">✈ One Way</button>
+        <button class="pill" onclick="setTrip(this,'round')">🔄 Round Trip</button>
+        <button class="pill" onclick="setTrip(this,'multi')">🗺 Multi City</button>
+      </div>
+      <div class="search-row1">
+        <div class="sf">
+          <div class="sf-label">From</div>
+          <div class="airport-picker" onclick="openApt('from')">
+            <div class="ap-code" id="fromCode">KHI</div>
+            <div class="ap-city" id="fromCity">Karachi, Pakistan</div>
+          </div>
+        </div>
+        <div class="swap-wrap">
+          <button class="swap" onclick="swapAirports()">⇆</button>
+        </div>
+        <div class="sf">
+          <div class="sf-label">To</div>
+          <div class="airport-picker" onclick="openApt('to')">
+            <div class="ap-code" id="toCode">DXB</div>
+            <div class="ap-city" id="toCity">Dubai, UAE</div>
+          </div>
+        </div>
+        <div class="sf">
+          <div class="sf-label">Departure</div>
+          <input type="date" class="sf-input" id="depDate"/>
+        </div>
+        <div class="sf" id="retWrap" style="display:none">
+          <div class="sf-label">Return</div>
+          <input type="date" class="sf-input" id="retDate"/>
+        </div>
+      </div>
+      <div class="search-row2">
+        <div class="sf">
+          <div class="sf-label">Adults (12+)</div>
+          <div class="pax-card">
+            <div class="pax-lbl">👤 Adults</div>
+            <div class="pax-ctrl">
+              <button class="pax-btn" onclick="pax('ad',-1)">−</button>
+              <div class="pax-val" id="adN">1</div>
+              <button class="pax-btn" onclick="pax('ad',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="sf">
+          <div class="sf-label">Children (2-11)</div>
+          <div class="pax-card">
+            <div class="pax-lbl">🧒 Children</div>
+            <div class="pax-ctrl">
+              <button class="pax-btn" onclick="pax('ch',-1)">−</button>
+              <div class="pax-val" id="chN">0</div>
+              <button class="pax-btn" onclick="pax('ch',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="sf">
+          <div class="sf-label">Cabin Class</div>
+          <select class="sf-input fsel" id="cabinCls">
+            <option>Economy</option>
+            <option>Business</option>
+            <option>First Class</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn-search" onclick="doSearch()">🔍 Search Flights</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTINATIONS -->
+  <section class="section">
+    <div class="sec-header">
+      <div>
+        <div class="sec-eyebrow">✦ Trending Now</div>
+        <div class="sec-title">Popular <em>Destinations</em></div>
+        <div class="sec-sub">Most booked routes this month — incredible fares waiting for you.</div>
+      </div>
+      <button class="btn-outline" onclick="goPage('results')">View All Flights →</button>
+    </div>
+    <div class="dest-grid">
+      <div class="dest-card tall" onclick="quickSearch('KHI','DXB')" style="background:linear-gradient(135deg,#0a1a30,#0d2850)">
+        <div class="dest-bg"><div class="dest-emoji-big">🏙</div></div>
+        <div class="dest-gradient"></div>
+        <div class="dest-info">
+          <div class="dest-city">Dubai</div>
+          <div class="dest-country">United Arab Emirates</div>
+          <div class="dest-tag">Most Popular</div>
+          <div class="dest-price-big">from $89</div>
+        </div>
+      </div>
+      <div class="dest-card" onclick="quickSearch('KHI','LHR')" style="background:linear-gradient(135deg,#0a0a1e,#101030)">
+        <div class="dest-bg"><div class="dest-emoji-big">🎡</div></div>
+        <div class="dest-gradient"></div>
+        <div class="dest-info">
+          <div class="dest-city">London</div>
+          <div class="dest-country">United Kingdom</div>
+          <div class="dest-tag">Trending</div>
+          <div class="dest-price-big">from $520</div>
+        </div>
+      </div>
+      <div class="dest-card" onclick="quickSearch('KHI','DOH')" style="background:linear-gradient(135deg,#1a0a00,#301500)">
+        <div class="dest-bg"><div class="dest-emoji-big">🕌</div></div>
+        <div class="dest-gradient"></div>
+        <div class="dest-info">
+          <div class="dest-city">Doha</div>
+          <div class="dest-country">Qatar</div>
+          <div class="dest-price-big">from $110</div>
+        </div>
+      </div>
+      <div class="dest-card" onclick="quickSearch('KHI','JFK')" style="background:linear-gradient(135deg,#0a1a0a,#0f2b10)">
+        <div class="dest-bg"><div class="dest-emoji-big">🗽</div></div>
+        <div class="dest-gradient"></div>
+        <div class="dest-info">
+          <div class="dest-city">New York</div>
+          <div class="dest-country">United States</div>
+          <div class="dest-price-big">from $750</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" style="padding-top:0">
+    <div class="sec-header" style="margin-bottom:36px">
+      <div>
+        <div class="sec-eyebrow">✦ Why SkyFly</div>
+        <div class="sec-title">The <em>Smarter</em> Way to Fly</div>
+      </div>
+    </div>
+    <div class="features-grid">
+      <div class="feat"><div class="feat-icon">💰</div><div class="feat-title">Best Price Guarantee</div><div class="feat-desc">We compare 500+ airlines to find the lowest fares. Found cheaper? We refund the difference, no questions asked.</div></div>
+      <div class="feat"><div class="feat-icon">⚡</div><div class="feat-title">Instant Booking</div><div class="feat-desc">Book your ticket in under 2 minutes. Your e-ticket arrives instantly via email — ready to board.</div></div>
+      <div class="feat"><div class="feat-icon">🔒</div><div class="feat-title">Bank-Grade Security</div><div class="feat-desc">256-bit SSL encryption protects every transaction. Your payment data is always safe and private.</div></div>
+      <div class="feat"><div class="feat-icon">🎯</div><div class="feat-title">Interactive Seat Map</div><div class="feat-desc">Choose your preferred seat — window, aisle or business class — with our real-time seat selector.</div></div>
+      <div class="feat"><div class="feat-icon">📱</div><div class="feat-title">Mobile E-Ticket</div><div class="feat-desc">Your boarding pass lives in your phone. Show it directly at the airport — no printing needed.</div></div>
+      <div class="feat"><div class="feat-icon">🤝</div><div class="feat-title">24/7 Concierge</div><div class="feat-desc">Our team is available around the clock for booking changes, cancellations, and any travel needs.</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════ PAGE: RESULTS ══════════════════════ -->
+<div class="page" id="page-results">
+  <div class="results-topbar">
+    <div>
+      <div class="res-route" id="resRoute">KHI <span>→</span> DXB</div>
+      <div class="res-meta" id="resMeta"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div class="sort-strip">
+        <button class="sort-pill active" onclick="sortF('price',this)">💰 Cheapest</button>
+        <button class="sort-pill" onclick="sortF('dur',this)">⚡ Fastest</button>
+        <button class="sort-pill" onclick="sortF('best',this)">⭐ Best</button>
+      </div>
+      <button class="btn-outline" onclick="goPage('home')">← Modify</button>
+    </div>
+  </div>
+  <div class="results-body">
+    <aside class="filter-panel">
+      <div class="fp-title">🎛 Filters</div>
+      <div class="fp-section">
+        <div class="fp-sec-title">Stops</div>
+        <div class="fp-option" onclick="togFilter(this,'stops','nonstop')"><div class="fp-check on">✓</div><span>Non-stop</span></div>
+        <div class="fp-option" onclick="togFilter(this,'stops','1stop')"><div class="fp-check on">✓</div><span>1 Stop</span></div>
+        <div class="fp-option" onclick="togFilter(this,'stops','2stop')"><div class="fp-check on">✓</div><span>2+ Stops</span></div>
+      </div>
+      <div class="fp-section">
+        <div class="fp-sec-title">Airlines</div>
+        <div class="fp-option" onclick="togFilter(this,'airline','PIA')"><div class="fp-check on">✓</div><span>PIA</span></div>
+        <div class="fp-option" onclick="togFilter(this,'airline','Emirates')"><div class="fp-check on">✓</div><span>Emirates</span></div>
+        <div class="fp-option" onclick="togFilter(this,'airline','Qatar Airways')"><div class="fp-check on">✓</div><span>Qatar Airways</span></div>
+        <div class="fp-option" onclick="togFilter(this,'airline','AirSial')"><div class="fp-check on">✓</div><span>AirSial</span></div>
+        <div class="fp-option" onclick="togFilter(this,'airline','AirBlue')"><div class="fp-check on">✓</div><span>AirBlue</span></div>
+        <div class="fp-option" onclick="togFilter(this,'airline','SereneAir')"><div class="fp-check on">✓</div><span>SereneAir</span></div>
+      </div>
+      <div class="fp-section">
+        <div class="fp-sec-title">Max Price</div>
+        <input type="range" class="price-track" id="priceSlider" min="50" max="1000" value="1000" oninput="updatePrice(this.value)"/>
+        <div class="price-rng"><span>$50</span><span id="priceMax">$1000</span></div>
+      </div>
+      <div class="fp-section">
+        <div class="fp-sec-title">Departure Time</div>
+        <div class="fp-option" onclick="togFilter(this,'time','morning')"><div class="fp-check on">✓</div><span>🌅 Morning (6–12)</span></div>
+        <div class="fp-option" onclick="togFilter(this,'time','afternoon')"><div class="fp-check on">✓</div><span>☀ Afternoon (12–18)</span></div>
+        <div class="fp-option" onclick="togFilter(this,'time','evening')"><div class="fp-check on">✓</div><span>🌙 Evening (18–24)</span></div>
+      </div>
+    </aside>
+    <div class="flight-stack" id="flightStack"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PAGE: BOOKING ══════════════════════ -->
+<div class="page" id="page-booking">
+  <div class="booking-wrap">
+    <div class="bk-main">
+
+      <div class="card">
+        <div class="card-title"><div class="step-badge">1</div> Passenger Details</div>
+        <div class="grid2" style="margin-bottom:14px">
+          <div class="fg"><label class="flbl">Title</label><select class="finput fsel" id="b-title"><option>Mr</option><option>Ms</option><option>Mrs</option><option>Dr</option></select></div>
+          <div class="fg"><label class="flbl">Nationality</label><select class="finput fsel" id="b-nat"><option>Pakistani</option><option>Indian</option><option>British</option><option>American</option><option>UAE</option><option>Saudi</option><option>Other</option></select></div>
+        </div>
+        <div class="grid2" style="margin-bottom:14px">
+          <div class="fg"><label class="flbl">First Name *</label><input type="text" class="finput" id="b-fn" placeholder="Ahmed"/></div>
+          <div class="fg"><label class="flbl">Last Name *</label><input type="text" class="finput" id="b-ln" placeholder="Khan"/></div>
+        </div>
+        <div class="grid3" style="margin-bottom:14px">
+          <div class="fg"><label class="flbl">Date of Birth</label><input type="date" class="finput" id="b-dob"/></div>
+          <div class="fg"><label class="flbl">Passport / CNIC *</label><input type="text" class="finput" id="b-pass" placeholder="AB1234567"/></div>
+          <div class="fg"><label class="flbl">Expiry</label><input type="date" class="finput" id="b-pexp"/></div>
+        </div>
+        <div class="grid2">
+          <div class="fg"><label class="flbl">Email *</label><input type="email" class="finput" id="b-email" placeholder="ahmed@email.com"/></div>
+          <div class="fg"><label class="flbl">Phone *</label><input type="tel" class="finput" id="b-phone" placeholder="+92 300 1234567"/></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="step-badge">2</div> Choose Your Seat</div>
+        <div class="plane-body">
+          <div class="plane-front"></div>
+          <div class="cabin-lbl">✦ Business Class</div>
+          <div id="bizRows"></div>
+          <div class="cabin-lbl" style="margin-top:10px">Economy Class</div>
+          <div id="econRows"></div>
+        </div>
+        <div class="seat-legend" style="margin-top:14px">
+          <div class="leg"><div class="leg-sq" style="background:rgba(26,108,240,.15);border-color:rgba(26,108,240,.4)"></div>Available</div>
+          <div class="leg"><div class="leg-sq" style="background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)"></div>Occupied</div>
+          <div class="leg"><div class="leg-sq" style="background:var(--gold);border-color:var(--gold)"></div>Selected</div>
+          <div class="leg"><div class="leg-sq" style="background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.4)"></div>Business</div>
+        </div>
+        <div id="seatInfo" style="margin-top:10px;font-size:13px;color:var(--text3)">No seat selected — choose above.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="step-badge">3</div> Add-ons & Extras</div>
+        <div class="grid2">
+          <div class="fg"><label class="flbl">Baggage</label><select class="finput fsel" id="b-bag" onchange="calcTotal()"><option value="0">Hand carry only (7kg) — Free</option><option value="20">20kg Checked — +$20</option><option value="35">30kg Checked — +$35</option><option value="55">40kg Checked — +$55</option></select></div>
+          <div class="fg"><label class="flbl">Meal</label><select class="finput fsel" id="b-meal" onchange="calcTotal()"><option value="0">Standard — Free</option><option value="5">Vegetarian — +$5</option><option value="5">Halal — +$5</option><option value="10">Kosher — +$10</option><option value="0">No Meal</option></select></div>
+          <div class="fg"><label class="flbl">Insurance</label><select class="finput fsel" id="b-ins" onchange="calcTotal()"><option value="0">No Insurance</option><option value="15">Basic — +$15</option><option value="30">Full Coverage — +$30</option></select></div>
+          <div class="fg"><label class="flbl">Assistance</label><select class="finput fsel" id="b-ast"><option>None</option><option>Wheelchair</option><option>Visually Impaired</option><option>With Infant</option></select></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="step-badge">4</div> Payment</div>
+        <div class="grid2" style="margin-bottom:14px">
+          <div class="fg"><label class="flbl">Method</label><select class="finput fsel" id="b-pm"><option>Credit Card</option><option>Debit Card</option><option>EasyPaisa</option><option>JazzCash</option><option>Bank Transfer</option></select></div>
+          <div class="fg"><label class="flbl">Cardholder Name</label><input type="text" class="finput" id="b-cn" placeholder="Ahmed Khan"/></div>
+        </div>
+        <div class="grid2" style="margin-bottom:14px">
+          <div class="fg"><label class="flbl">Card Number</label><input type="text" class="finput" id="b-cnum" placeholder="4242 4242 4242 4242" maxlength="19" oninput="fmtCard(this)"/></div>
+          <div class="fg"><label class="flbl">Expiry</label><input type="text" class="finput" id="b-cexp" placeholder="MM/YY" maxlength="5" oninput="fmtExp(this)"/></div>
+        </div>
+        <div class="fg" style="max-width:160px"><label class="flbl">CVV</label><input type="password" class="finput" id="b-cvv" placeholder="•••" maxlength="4"/></div>
+      </div>
+    </div>
+
+    <div class="bk-sidebar">
+      <div class="card">
+        <div class="card-title">📋 Booking Summary</div>
+        <div class="sum-flight-box">
+          <div class="sum-codes">
+            <div class="sum-code" id="sFrom">KHI</div>
+            <div class="sum-arrow">✈</div>
+            <div class="sum-code" id="sTo">DXB</div>
+          </div>
+          <div class="sum-dets">
+            <div class="sd"><div class="sd-l">Flight</div><div class="sd-v" id="sFlight">—</div></div>
+            <div class="sd"><div class="sd-l">Date</div><div class="sd-v" id="sDate">—</div></div>
+            <div class="sd"><div class="sd-l">Departs</div><div class="sd-v" id="sDep">—</div></div>
+            <div class="sd"><div class="sd-l">Arrives</div><div class="sd-v" id="sArr">—</div></div>
+            <div class="sd"><div class="sd-l">Duration</div><div class="sd-v" id="sDur">—</div></div>
+            <div class="sd"><div class="sd-l">Class</div><div class="sd-v" id="sCls">—</div></div>
+          </div>
+        </div>
+        <div class="price-lines">
+          <div class="pline"><span>Base (×<span id="paxCnt">1</span>)</span><span id="pBase">$0</span></div>
+          <div class="pline"><span>Taxes (15%)</span><span id="pTax">$0</span></div>
+          <div class="pline"><span>Baggage</span><span id="pBag">$0</span></div>
+          <div class="pline"><span>Meal</span><span id="pMeal">$0</span></div>
+          <div class="pline"><span>Insurance</span><span id="pIns">$0</span></div>
+          <div class="pline total"><span>Total</span><span id="pTotal">$0</span></div>
+        </div>
+        <button class="btn-confirm" onclick="confirmBk()">✔ Confirm &amp; Pay</button>
+        <div class="ssl-badge">🔒 256-bit SSL secured payment</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PAGE: CONFIRM ══════════════════════ -->
+<div class="page" id="page-confirm">
+  <div class="confirm-wrap">
+    <div class="conf-anim">
+      <div class="conf-icon">🎉</div>
+      <div class="conf-title">Booking <em style="font-style:italic;color:var(--gold2)">Confirmed!</em></div>
+      <div class="conf-sub">Your luxury e-ticket has been sent to your email address.<br>Safe travels and bon voyage! ✈</div>
+    </div>
+    <div class="e-ticket">
+      <div class="et-rainbow"></div>
+      <div class="et-header">
+        <div class="et-logo-wrap">
+          <div class="et-logo-icon">✈</div>
+          <div class="et-logo-name">Sky<em>Fly</em></div>
+        </div>
+        <div class="et-ref-wrap">
+          <div class="et-ref-lbl">Booking Reference</div>
+          <div class="et-ref" id="et-ref">SKY-000000</div>
+        </div>
+      </div>
+      <div class="et-body">
+        <div class="et-route">
+          <div>
+            <div class="et-city" id="et-from">KHI</div>
+            <div class="et-city-name" id="et-from-name">Karachi</div>
+          </div>
+          <div class="et-route-mid">
+            <div class="et-track">
+              <div class="et-dot"></div>
+              <div class="et-line"></div>
+              <div class="et-plane">✈</div>
+              <div class="et-line"></div>
+              <div class="et-dot"></div>
+            </div>
+            <div class="et-dur" id="et-dur">2h 15m · Non-stop</div>
+          </div>
+          <div style="text-align:right">
+            <div class="et-city" id="et-to">DXB</div>
+            <div class="et-city-name" id="et-to-name">Dubai</div>
+          </div>
+        </div>
+        <div class="et-dets">
+          <div class="etd"><div class="etd-l">Passenger</div><div class="etd-v" id="et-pax">—</div></div>
+          <div class="etd"><div class="etd-l">Date</div><div class="etd-v" id="et-date">—</div></div>
+          <div class="etd"><div class="etd-l">Departure</div><div class="etd-v" id="et-dep">—</div></div>
+          <div class="etd"><div class="etd-l">Seat</div><div class="etd-v" id="et-seat">—</div></div>
+          <div class="etd"><div class="etd-l">Flight</div><div class="etd-v" id="et-flight">—</div></div>
+          <div class="etd"><div class="etd-l">Class</div><div class="etd-v" id="et-class">—</div></div>
+          <div class="etd"><div class="etd-l">Baggage</div><div class="etd-v" id="et-bag">7kg</div></div>
+          <div class="etd"><div class="etd-l">Total Paid</div><div class="etd-v" id="et-total" style="color:var(--gold2)">—</div></div>
+        </div>
+      </div>
+      <div class="et-footer">
+        <div>Arrive 2 hours before departure · Valid photo ID required</div>
+        <canvas id="barcodeCanvas" width="160" height="56" style="border-radius:8px;background:#fff;padding:4px 6px;display:block"></canvas>
+      </div>
+    </div>
+    <div class="conf-btns">
+      <button class="btn-gold-outline" onclick="window.print()">🖨 Print Ticket</button>
+      <button class="btn-ghost2" onclick="newSearch()">+ New Booking</button>
+      <button class="btn-ghost2" onclick="goPage('bookings')">📋 My Bookings</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PAGE: BOOKINGS ══════════════════════ -->
+<div class="page" id="page-bookings">
+  <div class="bookings-page">
+    <div class="sec-eyebrow">✦ Your Journeys</div>
+    <div class="sec-title">My <em>Bookings</em></div>
+    <div class="bk-list" id="bkList"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PAGE: ABOUT ══════════════════════ -->
+<div class="page" id="page-about">
+  <section class="section" style="max-width:900px;margin:0 auto;margin-top:68px">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="sec-eyebrow">✦ Our Story</div>
+      <div class="sec-title">About <em>SkyFly</em></div>
+      <div style="font-size:15px;color:var(--text2);max-width:500px;margin:14px auto;line-height:1.7">Pakistan's most trusted luxury flight booking platform — making world-class travel accessible to everyone.</div>
+    </div>
+    <div class="features-grid">
+      <div class="feat" style="text-align:center"><div class="feat-icon" style="margin:0 auto 18px">🏢</div><div class="feat-title">Founded 2020</div><div class="feat-desc">Started in Karachi, SkyFly has grown to serve millions of travelers across South Asia and beyond.</div></div>
+      <div class="feat" style="text-align:center"><div class="feat-icon" style="margin:0 auto 18px">🌍</div><div class="feat-title">Global Coverage</div><div class="feat-desc">We cover 150+ countries connecting you with 500+ airlines from budget carriers to luxury full-service flights.</div></div>
+      <div class="feat" style="text-align:center"><div class="feat-icon" style="margin:0 auto 18px">🏆</div><div class="feat-title">Award Winning</div><div class="feat-desc">Best OTA of the Year 2023 by Pakistan Tourism Awards. Trusted by 2 million+ happy travelers worldwide.</div></div>
+    </div>
+  </section>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+        <div class="nav-emblem" style="width:36px;height:36px;font-size:17px">✈</div>
+        <div class="brand-name" style="font-size:20px">Sky<em>Fly</em></div>
+      </div>
+      <div class="fb-desc">Pakistan's leading luxury online flight reservation platform. Book with confidence, travel with elegance.</div>
+    </div>
+    <div><div class="fc-title">Explore</div><div class="fc-links"><span class="fc-link" onclick="goPage('home')">Search Flights</span><span class="fc-link" onclick="goPage('bookings')">My Bookings</span><span class="fc-link" onclick="goPage('about')">About Us</span></div></div>
+    <div><div class="fc-title">Support</div><div class="fc-links"><span class="fc-link">Help Center</span><span class="fc-link">Cancellation Policy</span><span class="fc-link">Baggage Info</span><span class="fc-link">Contact Us</span></div></div>
+    <div><div class="fc-title">Contact</div><div class="fc-links"><span class="fc-link">📞 +92 21 111 759 359</span><span class="fc-link">✉ support@skyfly.pk</span><span class="fc-link">📍 Karachi, Pakistan</span></div></div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-gold">Sky<em>Fly</em> © 2026</div>
+    <span>Privacy Policy · Terms of Service · Cookie Policy</span>
+  </div>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+// ══════════════════════════════════════════
+//  CURSOR — dot instant, ring smooth lag
+// ══════════════════════════════════════════
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  // Dot follows mouse INSTANTLY — no lag at all
+  cur.style.left=mx+'px';
+  cur.style.top=my+'px';
+});
+
+// Ring follows with smooth easing
+function animRing(){
+  // Lerp ring towards mouse position
+  rx+=(mx-rx)*.13;
+  ry+=(my-ry)*.13;
+  ring.style.left=rx+'px';
+  ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+// Hover effect — ring expands on interactive elements
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('button,a,[onclick],.airport-picker,.dest-card,.fc,.apt-opt,.fp-option,.seat')){
+    ring.classList.add('hovered');
+  } else {
+    ring.classList.remove('hovered');
+  }
+});
+
+// ══════════════════════════════════════════
+//  NAVBAR SCROLL
+// ══════════════════════════════════════════
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>20);
+});
+
+// ══════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════
+const AIRPORTS=[
+  {code:'KHI',city:'Karachi',country:'Pakistan',name:'Jinnah International'},
+  {code:'LHE',city:'Lahore',country:'Pakistan',name:'Allama Iqbal International'},
+  {code:'ISB',city:'Islamabad',country:'Pakistan',name:'New Islamabad International'},
+  {code:'MUX',city:'Multan',country:'Pakistan',name:'Multan International'},
+  {code:'PEW',city:'Peshawar',country:'Pakistan',name:'Bacha Khan International'},
+  {code:'SKT',city:'Sialkot',country:'Pakistan',name:'Sialkot International'},
+  {code:'DXB',city:'Dubai',country:'UAE',name:'Dubai International'},
+  {code:'AUH',city:'Abu Dhabi',country:'UAE',name:'Abu Dhabi International'},
+  {code:'SHJ',city:'Sharjah',country:'UAE',name:'Sharjah International'},
+  {code:'DOH',city:'Doha',country:'Qatar',name:'Hamad International'},
+  {code:'RUH',city:'Riyadh',country:'Saudi Arabia',name:'King Khalid International'},
+  {code:'JED',city:'Jeddah',country:'Saudi Arabia',name:'King Abdulaziz International'},
+  {code:'MED',city:'Madinah',country:'Saudi Arabia',name:'Prince Mohammad bin Abdulaziz'},
+  {code:'LHR',city:'London',country:'UK',name:'Heathrow Airport'},
+  {code:'CDG',city:'Paris',country:'France',name:'Charles de Gaulle'},
+  {code:'JFK',city:'New York',country:'USA',name:'John F. Kennedy International'},
+  {code:'ORD',city:'Chicago',country:'USA',name:"O'Hare International"},
+  {code:'SIN',city:'Singapore',country:'Singapore',name:'Changi Airport'},
+  {code:'BKK',city:'Bangkok',country:'Thailand',name:'Suvarnabhumi Airport'},
+  {code:'KUL',city:'Kuala Lumpur',country:'Malaysia',name:'KLIA'},
+  {code:'DEL',city:'Delhi',country:'India',name:'Indira Gandhi International'},
+  {code:'BOM',city:'Mumbai',country:'India',name:'Chhatrapati Shivaji Maharaj'},
+  {code:'MCT',city:'Muscat',country:'Oman',name:'Muscat International'},
+  {code:'KWI',city:'Kuwait City',country:'Kuwait',name:'Kuwait International'},
+  {code:'BAH',city:'Bahrain',country:'Bahrain',name:'Bahrain International'},
+];
+
+const FLIGHTS=[
+  {id:1,airline:'PIA',code:'PK-201',lg:'al-pia',dep:'06:30',arr:'08:45',dur:'2h 15m',mins:135,stops:'Non-stop',sc:0,price:89,cls:'Economy'},
+  {id:2,airline:'Emirates',code:'EK-604',lg:'al-em',dep:'09:15',arr:'11:30',dur:'2h 15m',mins:135,stops:'Non-stop',sc:0,price:145,cls:'Economy'},
+  {id:3,airline:'Qatar Airways',code:'QR-9811',lg:'al-qr',dep:'13:20',arr:'15:50',dur:'2h 30m',mins:150,stops:'Non-stop',sc:0,price:198,cls:'Business'},
+  {id:4,airline:'AirSial',code:'PF-112',lg:'al-ai',dep:'07:45',arr:'11:15',dur:'3h 30m',mins:210,stops:'1 Stop (LHE)',sc:1,price:67,cls:'Economy'},
+  {id:5,airline:'AirBlue',code:'PA-220',lg:'al-ek',dep:'16:30',arr:'19:00',dur:'2h 30m',mins:150,stops:'Non-stop',sc:0,price:105,cls:'Economy'},
+  {id:6,airline:'SereneAir',code:'ER-405',lg:'al-sg',dep:'22:45',arr:'02:30+1',dur:'3h 45m',mins:225,stops:'1 Stop (ISB)',sc:1,price:79,cls:'Economy'},
+];
+
+const ST={
+  from:AIRPORTS[0],to:AIRPORTS[6],
+  pax:{ad:1,ch:0},trip:'one',
+  depDate:'',retDate:'',
+  cabin:'Economy',
+  flight:null,seat:null,seatType:null,
+  bookings:[],
+  aptTarget:null,
+  filters:{stops:['nonstop','1stop','2stop'],airline:['PIA','Emirates','Qatar Airways','AirSial','AirBlue','SereneAir'],time:['morning','afternoon','evening']},
+  priceMax:1000,
+};
+
+// ══ INIT ══
+(()=>{
+  const d=new Date();d.setDate(d.getDate()+7);
+  document.getElementById('depDate').value=d.toISOString().split('T')[0];
+  ST.depDate=document.getElementById('depDate').value;
+  try{const b=localStorage.getItem('sf_bk');if(b)ST.bookings=JSON.parse(b);}catch(e){}
+  checkAutoLogin();
+  document.getElementById('aptOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('aptOverlay'))document.getElementById('aptOverlay').classList.remove('open');});
+  document.getElementById('authOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('authOverlay'))closeAuth();});
+})();
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+function goPage(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='bookings')renderBkList();
+}
+
+// ══════════════════════════════════════════
+//  AIRPORT MODAL
+// ══════════════════════════════════════════
+function openApt(which){
+  ST.aptTarget=which;
+  document.getElementById('aptSearch').value='';
+  renderApts(AIRPORTS);
+  document.getElementById('aptOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('aptSearch').focus(),80);
+}
+function filterApt(){
+  const q=document.getElementById('aptSearch').value.toLowerCase().trim();
+  renderApts(q?AIRPORTS.filter(a=>a.code.toLowerCase().includes(q)||a.city.toLowerCase().includes(q)||a.country.toLowerCase().includes(q)||a.name.toLowerCase().includes(q)):AIRPORTS);
+}
+function renderApts(list){
+  document.getElementById('aptList').innerHTML=list.length
+    ?list.map(a=>`<div class="apt-opt" onclick="pickApt('${a.code}')"><div class="apt-code">${a.code}</div><div><div class="apt-city">${a.city}, ${a.country}</div><div class="apt-country">${a.name}</div></div></div>`).join('')
+    :'<div style="color:var(--text3);padding:14px;text-align:center;font-size:13px">No airports found</div>';
+}
+function pickApt(code){
+  const a=AIRPORTS.find(x=>x.code===code);
+  if(!a)return;
+  if(ST.aptTarget==='from')ST.from=a;else ST.to=a;
+  updateAptUI();
+  document.getElementById('aptOverlay').classList.remove('open');
+}
+function updateAptUI(){
+  document.getElementById('fromCode').textContent=ST.from.code;
+  document.getElementById('fromCity').textContent=ST.from.city+', '+ST.from.country;
+  document.getElementById('toCode').textContent=ST.to.code;
+  document.getElementById('toCity').textContent=ST.to.city+', '+ST.to.country;
+}
+function swapAirports(){
+  const t=ST.from;ST.from=ST.to;ST.to=t;
+  updateAptUI();
+  document.querySelector('.swap').style.transform='rotate(180deg)';
+  setTimeout(()=>document.querySelector('.swap').style.transform='',400);
+}
+function pax(type,d){
+  ST.pax[type]=Math.max(type==='ad'?1:0,ST.pax[type]+d);
+  document.getElementById(type+'N').textContent=ST.pax[type];
+}
+function setTrip(btn,t){
+  document.querySelectorAll('.pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');ST.trip=t;
+  document.getElementById('retWrap').style.display=t==='round'?'block':'none';
+}
+
+// ══════════════════════════════════════════
+//  SEARCH
+// ══════════════════════════════════════════
+function quickSearch(f,t){
+  ST.from=AIRPORTS.find(a=>a.code===f)||ST.from;
+  ST.to=AIRPORTS.find(a=>a.code===t)||ST.to;
+  updateAptUI();doSearch();
+}
+function doSearch(){
+  ST.depDate=document.getElementById('depDate').value;
+  ST.cabin=document.getElementById('cabinCls').value;
+  if(!ST.depDate){toast('Please select departure date','warn');return;}
+  if(ST.from.code===ST.to.code){toast('Origin and destination cannot be same','warn');return;}
+  showLoad(true,'Searching best fares...');
+  setTimeout(()=>{showLoad(false);renderResults();goPage('results');},1300);
+}
+function renderResults(){
+  document.getElementById('resRoute').innerHTML=`${ST.from.code} <span>→</span> ${ST.to.code}`;
+  const d=new Date(ST.depDate);
+  document.getElementById('resMeta').textContent=
+    `${d.toLocaleDateString('en-US',{weekday:'short',day:'numeric',month:'short',year:'numeric'})} · ${ST.pax.ad} Adult${ST.pax.ad>1?'s':''}${ST.pax.ch?' · '+ST.pax.ch+' Child':''} · ${ST.cabin}`;
+  renderFlights(FLIGHTS);
+}
+function renderFlights(data){
+  const list=document.getElementById('flightStack');
+  const pm=ST.priceMax;
+  const fil=data.filter(f=>{
+    if(f.price>pm)return false;
+    if(f.sc===0&&!ST.filters.stops.includes('nonstop'))return false;
+    if(f.sc===1&&!ST.filters.stops.includes('1stop'))return false;
+    if(f.sc>=2&&!ST.filters.stops.includes('2stop'))return false;
+    if(!ST.filters.airline.includes(f.airline))return false;
+    const h=parseInt(f.dep);
+    if(h>=6&&h<12&&!ST.filters.time.includes('morning'))return false;
+    if(h>=12&&h<18&&!ST.filters.time.includes('afternoon'))return false;
+    if((h>=18||h<6)&&!ST.filters.time.includes('evening'))return false;
+    return true;
+  });
+  if(!fil.length){list.innerHTML='<div class="no-results"><div style="font-size:48px;margin-bottom:14px">🔍</div><div style="font-size:16px;font-weight:700;margin-bottom:6px">No flights found</div><div style="font-size:13px;color:var(--text3)">Try adjusting your filters</div></div>';return;}
+  list.innerHTML=fil.map(f=>`
+    <div class="fc" id="fc${f.id}" onclick="pickFlight(${f.id})">
+      <div class="airline-col">
+        <div class="al-badge ${f.lg}">${f.airline[0]}</div>
+        <div><div class="al-name">${f.airline}</div><div class="al-num">${f.code}</div></div>
+      </div>
+      <div class="route-col">
+        <div class="tm"><div class="tm-time">${f.dep}</div><div class="tm-code">${ST.from.code}</div></div>
+        <div class="route-mid">
+          <div class="dur">${f.dur}</div>
+          <div class="route-track"><div class="rt-dot"></div><div class="rt-line"></div><div class="rt-plane">✈</div><div class="rt-line"></div><div class="rt-dot"></div></div>
+          <div class="stops-label ${f.sc===0?'direct':''}">${f.stops}</div>
+        </div>
+        <div class="tm"><div class="tm-time">${f.arr}</div><div class="tm-code">${ST.to.code}</div></div>
+      </div>
+      <div class="price-col">
+        <div class="cls-tag">${f.cls}</div>
+        <div class="price-amt">$${f.price}</div>
+        <div class="price-pp">per person</div>
+        <button class="btn-pick" onclick="event.stopPropagation();pickFlight(${f.id})">Select →</button>
+      </div>
+    </div>`).join('');
+}
+function sortF(by,btn){
+  document.querySelectorAll('.sort-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const s=[...FLIGHTS];
+  if(by==='price')s.sort((a,b)=>a.price-b.price);
+  else if(by==='dur')s.sort((a,b)=>a.mins-b.mins);
+  else s.sort((a,b)=>(a.price*.5+a.mins*.5)-(b.price*.5+b.mins*.5));
+  renderFlights(s);
+}
+function togFilter(el,type,val){
+  const cb=el.querySelector('.fp-check');
+  const arr=ST.filters[type];
+  const i=arr.indexOf(val);
+  if(i>=0){arr.splice(i,1);cb.classList.remove('on');cb.textContent='';}
+  else{arr.push(val);cb.classList.add('on');cb.textContent='✓';}
+  renderFlights(FLIGHTS);
+}
+function updatePrice(v){
+  ST.priceMax=parseInt(v);
+  document.getElementById('priceMax').textContent='$'+v;
+  renderFlights(FLIGHTS);
+}
+
+// ══════════════════════════════════════════
+//  PICK FLIGHT → BOOKING
+// ══════════════════════════════════════════
+function pickFlight(id){
+  document.querySelectorAll('.fc').forEach(c=>c.classList.remove('chosen'));
+  const c=document.getElementById('fc'+id);if(c)c.classList.add('chosen');
+  ST.flight=FLIGHTS.find(f=>f.id===id);
+  ST.seat=null;ST.seatType=null;ST.selectedClass=null;
+  setTimeout(()=>{goPage('booking');fillSummary();buildSeats();calcTotal();},200);
+}
+function fillSummary(){
+  const f=ST.flight;if(!f)return;
+  document.getElementById('sFrom').textContent=ST.from.code;
+  document.getElementById('sTo').textContent=ST.to.code;
+  document.getElementById('sFlight').textContent=f.code;
+  document.getElementById('sDep').textContent=f.dep;
+  document.getElementById('sArr').textContent=f.arr;
+  document.getElementById('sDur').textContent=f.dur;
+  document.getElementById('sCls').textContent=f.cls;
+  document.getElementById('paxCnt').textContent=ST.pax.ad+ST.pax.ch;
+  const d=new Date(ST.depDate);
+  document.getElementById('sDate').textContent=d.toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'});
+}
+
+// ══════════════════════════════════════════
+//  SEAT MAP
+// ══════════════════════════════════════════
+const TAKEN=new Set(['1A','1C','2B','2D','3A','3F','4B','4E','5C','5D','6A','6B','7C','8E','8F','9A','9D','10B','10C','11E']);
+function buildSeats(){
+  ST.seat=null;
+  let biz='',eco='';
+  for(let r=1;r<=3;r++){
+    biz+=`<div class="seat-row"><div class="rnum">${r}</div>`;
+    ['A','C'].forEach(s=>{const id=r+s;const t=TAKEN.has(id);biz+=`<div class="seat ${t?'tk':'bz'}" id="s${id}" ${t?'':` onclick="pickSeat('${id}','bz')"`}>${t?'':id}</div>`;});
+    biz+=`<div class="aisle"></div>`;
+    ['D','F'].forEach(s=>{const id=r+s;const t=TAKEN.has(id);biz+=`<div class="seat ${t?'tk':'bz'}" id="s${id}" ${t?'':` onclick="pickSeat('${id}','bz')"`}>${t?'':id}</div>`;});
+    biz+='</div>';
+  }
+  for(let r=4;r<=15;r++){
+    eco+=`<div class="seat-row"><div class="rnum">${r}</div>`;
+    ['A','B','C'].forEach(s=>{const id=r+s;const t=TAKEN.has(id);eco+=`<div class="seat ${t?'tk':'av'}" id="s${id}" ${t?'':` onclick="pickSeat('${id}','av')"`}>${t?'':id}</div>`;});
+    eco+=`<div class="aisle"></div>`;
+    ['D','E','F'].forEach(s=>{const id=r+s;const t=TAKEN.has(id);eco+=`<div class="seat ${t?'tk':'av'}" id="s${id}" ${t?'':` onclick="pickSeat('${id}','av')"`}>${t?'':id}</div>`;});
+    eco+='</div>';
+  }
+  document.getElementById('bizRows').innerHTML=biz;
+  document.getElementById('econRows').innerHTML=eco;
+}
+function pickSeat(id,type){
+  if(ST.seat){const p=document.getElementById('s'+ST.seat);if(p){p.classList.remove('sel');p.classList.add(ST.seatType==='bz'?'bz':'av');}}
+  ST.seat=id;ST.seatType=type;
+  const el=document.getElementById('s'+id);
+  if(el){el.classList.remove('av','bz');el.classList.add('sel');}
+  // Determine actual class based on seat type selected
+  const actualClass = type==='bz' ? 'Business Class' : 'Economy Class';
+  document.getElementById('seatInfo').innerHTML=`<span style="color:var(--gold2)">✦ Seat ${id} selected</span> — ${actualClass}`;
+  // ✅ UPDATE booking summary class instantly
+  document.getElementById('sCls').textContent = actualClass;
+  // Store selected class for e-ticket
+  ST.selectedClass = actualClass;
+}
+function calcTotal(){
+  if(!ST.flight)return 0;
+  const base=ST.flight.price*(ST.pax.ad+ST.pax.ch*0.5);
+  const tax=Math.round(base*.15);
+  const bag=parseInt(document.getElementById('b-bag').value)||0;
+  const meal=parseInt(document.getElementById('b-meal').value)||0;
+  const ins=parseInt(document.getElementById('b-ins').value)||0;
+  const total=Math.round(base)+tax+bag+meal+ins;
+  document.getElementById('pBase').textContent='$'+Math.round(base);
+  document.getElementById('pTax').textContent='$'+tax;
+  document.getElementById('pBag').textContent='$'+bag;
+  document.getElementById('pMeal').textContent='$'+meal;
+  document.getElementById('pIns').textContent='$'+ins;
+  document.getElementById('pTotal').textContent='$'+total;
+  return total;
+}
+
+// ══════════════════════════════════════════
+//  CONFIRM BOOKING
+// ══════════════════════════════════════════
+function confirmBk(){
+  const fn=document.getElementById('b-fn').value.trim();
+  const ln=document.getElementById('b-ln').value.trim();
+  const em=document.getElementById('b-email').value.trim();
+  const ph=document.getElementById('b-phone').value.trim();
+  const pp=document.getElementById('b-pass').value.trim();
+  if(!fn){toast('Enter first name','warn');document.getElementById('b-fn').focus();return;}
+  if(!ln){toast('Enter last name','warn');document.getElementById('b-ln').focus();return;}
+  if(!em||!em.includes('@')){toast('Enter valid email','warn');document.getElementById('b-email').focus();return;}
+  if(!ph){toast('Enter phone number','warn');document.getElementById('b-phone').focus();return;}
+  if(!pp){toast('Enter passport/CNIC','warn');document.getElementById('b-pass').focus();return;}
+  showLoad(true,'Processing secure payment...');
+  setTimeout(()=>{
+    showLoad(false);
+    const ref='SKY-'+Math.floor(100000+Math.random()*900000);
+    const f=ST.flight;
+    const total=calcTotal();
+    const d=new Date(ST.depDate);
+    const ds=d.toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'});
+    const bagEl=document.getElementById('b-bag');
+    const bagTxt=bagEl.options[bagEl.selectedIndex].text.split('—')[0].trim();
+    document.getElementById('et-ref').textContent=ref;
+    document.getElementById('et-from').textContent=ST.from.code;
+    document.getElementById('et-from-name').textContent=ST.from.city;
+    document.getElementById('et-to').textContent=ST.to.code;
+    document.getElementById('et-to-name').textContent=ST.to.city;
+    document.getElementById('et-dur').textContent=f.dur+' · '+f.stops;
+    document.getElementById('et-pax').textContent=fn+' '+ln;
+    document.getElementById('et-date').textContent=ds;
+    document.getElementById('et-dep').textContent=f.dep;
+    document.getElementById('et-seat').textContent=ST.seat||'Auto';
+    document.getElementById('et-flight').textContent=f.code;
+    // ✅ Use actual selected class (Business/Economy based on seat chosen)
+    const finalClass = ST.selectedClass || f.cls;
+    document.getElementById('et-class').textContent=finalClass;
+    document.getElementById('et-bag').textContent=bagTxt;
+    document.getElementById('et-total').textContent='$'+total;
+    const bk={ref,from:ST.from.code,to:ST.to.code,fromCity:ST.from.city,toCity:ST.to.city,flight:f.code,airline:f.airline,dep:f.dep,arr:f.arr,dur:f.dur,date:ds,pax:fn+' '+ln,seat:ST.seat||'Auto',cls:finalClass,total:'$'+total,status:'Confirmed'};
+    ST.bookings.unshift(bk);
+    try{localStorage.setItem('sf_bk',JSON.stringify(ST.bookings));}catch(e){}
+    goPage('confirm');
+    // Draw real barcode with booking ref + flight info
+    setTimeout(()=>drawBarcode('barcodeCanvas', ref+' '+f.code+' '+ST.from.code+ST.to.code), 100);
+    toast('✅ Booking confirmed! '+ref,'success');
+  },2000);
+}
+
+// ══════════════════════════════════════════
+//  MY BOOKINGS
+// ══════════════════════════════════════════
+function renderBkList(){
+  const el=document.getElementById('bkList');
+  if(!ST.bookings.length){
+    el.innerHTML='<div class="empty-bk"><div class="empty-bk-icon">✈</div><div style="font-size:17px;font-weight:700;color:var(--text2);margin-bottom:6px">No bookings yet</div><div style="font-size:13px;color:var(--text3)">Search and book a flight to see it here</div></div>';
+    return;
+  }
+  el.innerHTML=ST.bookings.map((b,i)=>`
+    <div class="bk-item">
+      <div style="flex:1">
+        <div class="bki-ref">${b.ref} · ${b.airline}</div>
+        <div class="bki-route">${b.from} → ${b.to}</div>
+        <div class="bki-meta">
+          <span>📅 ${b.date}</span><span>✈ ${b.flight}</span>
+          <span>🕐 ${b.dep} – ${b.arr}</span>
+          <span>👤 ${b.pax}</span><span>💺 ${b.seat}</span>
+        </div>
+        <div style="margin-top:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <canvas id="bc${i}" width="160" height="46" style="border-radius:6px;background:#fff;padding:3px 5px;display:block"></canvas>
+          <button onclick="deleteBk(${i})" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(255,77,109,.3);background:rgba(255,77,109,.08);color:#ff8fa3;font-size:12px;cursor:pointer;font-family:'Cabinet Grotesk',sans-serif;transition:all .2s" onmouseover="this.style.background='rgba(255,77,109,.18)'" onmouseout="this.style.background='rgba(255,77,109,.08)'">🗑 Delete</button>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="bki-price">${b.total}</div>
+        <div class="status status-confirmed">${b.status}</div>
+      </div>
+    </div>`).join('');
+  // Draw barcodes for each booking
+  ST.bookings.forEach((b,i)=>{
+    setTimeout(()=>drawBarcode('bc'+i, b.ref+' '+b.flight+' '+b.from+b.to), 50+i*30);
+  });
+}
+
+function deleteBk(idx){
+  if(!confirm('Delete this booking?')) return;
+  ST.bookings.splice(idx,1);
+  try{localStorage.setItem('sf_bk',JSON.stringify(ST.bookings));}catch(e){}
+  renderBkList();
+  toast('🗑 Booking deleted','success');
+}
+function newSearch(){
+  ST.flight=null;ST.seat=null;ST.selectedClass=null;
+  ['b-fn','b-ln','b-email','b-phone','b-pass','b-cn','b-cnum','b-cexp','b-cvv'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  goPage('home');
+}
+
+// ══════════════════════════════════════════
+//  INPUT FORMATTERS
+// ══════════════════════════════════════════
+function fmtCard(el){let v=el.value.replace(/\D/g,'').slice(0,16);el.value=v.replace(/(.{4})/g,'$1 ').trim();}
+function fmtExp(el){let v=el.value.replace(/\D/g,'').slice(0,4);if(v.length>=3)v=v.slice(0,2)+'/'+v.slice(2);el.value=v;}
+
+// ══════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════
+function getUsers(){try{return JSON.parse(localStorage.getItem('sf_users')||'[]');}catch(e){return[];}}
+function saveUsers(u){try{localStorage.setItem('sf_users',JSON.stringify(u));}catch(e){}}
+function getCurUser(){try{return JSON.parse(localStorage.getItem('sf_cur')||'null');}catch(e){return null;}}
+function setCurUser(u){try{localStorage.setItem('sf_cur',JSON.stringify(u));}catch(e){}}
+function openAuth(tab){document.getElementById('authOverlay').classList.add('open');switchAuth(tab);clearAuthMsgs();}
+function closeAuth(){document.getElementById('authOverlay').classList.remove('open');clearAuthMsgs();}
+function switchAuth(tab){
+  document.getElementById('tabSI').classList.toggle('on',tab==='si');
+  document.getElementById('tabRG').classList.toggle('on',tab==='rg');
+  document.getElementById('formSI').classList.toggle('on',tab==='si');
+  document.getElementById('formRG').classList.toggle('on',tab==='rg');
+  clearAuthMsgs();
+}
+function clearAuthMsgs(){['siErr','siOk','rgErr','rgOk'].forEach(id=>{const e=document.getElementById(id);if(e){e.className=e.className.includes('aok')?'aok':'aerr';e.textContent='';}}); }
+function showAMsg(id,msg,type='err'){const e=document.getElementById(id);if(e){e.textContent=msg;e.className=type==='ok'?'aok show':'aerr show';}}
+function togglePw(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈';}
+function strCheck(v){
+  const f=document.getElementById('strFill'),l=document.getElementById('strLbl');
+  if(!v){f.style.width='0';l.textContent='';return;}
+  let s=0;
+  if(v.length>=8)s++;if(v.length>=12)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;
+  const lvs=[{w:'20%',c:'#ef4444',t:'Very Weak'},{w:'40%',c:'#f97316',t:'Weak'},{w:'60%',c:'#f59e0b',t:'Fair'},{w:'80%',c:'#3b82f6',t:'Strong'},{w:'100%',c:'#00e5a0',t:'Very Strong'}];
+  const lv=lvs[Math.min(s-1,4)]||lvs[0];
+  f.style.width=lv.w;f.style.background=lv.c;l.textContent=lv.t;l.style.color=lv.c;
+}
+function doSignIn(){
+  const em=document.getElementById('si-email').value.trim();
+  const pw=document.getElementById('si-pass').value;
+  if(!em||!em.includes('@')){showAMsg('siErr','Please enter a valid email address');return;}
+  if(!pw){showAMsg('siErr','Please enter your password');return;}
+  const u=getUsers().find(u=>u.email.toLowerCase()===em.toLowerCase());
+  if(!u){showAMsg('siErr','No account found. Please register first.');return;}
+  if(u.pw!==btoa(pw)){showAMsg('siErr','Incorrect password. Please try again.');return;}
+  showAMsg('siOk','✅ Welcome back, '+u.fn+'!','ok');
+  setCurUser(u);
+  setTimeout(()=>{closeAuth();updateNavUser(u);toast('👋 Welcome back, '+u.fn+'!','success');},1000);
+}
+function doRegister(){
+  const fn=document.getElementById('rg-fn').value.trim();
+  const ln=document.getElementById('rg-ln').value.trim();
+  const em=document.getElementById('rg-em').value.trim();
+  const ph=document.getElementById('rg-ph').value.trim();
+  const pw=document.getElementById('rg-pw').value;
+  const cp=document.getElementById('rg-cp').value;
+  if(!fn){showAMsg('rgErr','Enter your first name');return;}
+  if(!ln){showAMsg('rgErr','Enter your last name');return;}
+  if(!em||!em.includes('@')){showAMsg('rgErr','Enter a valid email address');return;}
+  if(!ph){showAMsg('rgErr','Enter your phone number');return;}
+  if(pw.length<8){showAMsg('rgErr','Password must be at least 8 characters');return;}
+  if(pw!==cp){showAMsg('rgErr','Passwords do not match');return;}
+  const users=getUsers();
+  if(users.find(u=>u.email.toLowerCase()===em.toLowerCase())){showAMsg('rgErr','This email is already registered. Sign in instead.');return;}
+  const nu={id:'USR-'+Math.floor(10000+Math.random()*90000),fn,ln,email:em,phone:ph,pw:btoa(pw)};
+  users.push(nu);saveUsers(users);setCurUser(nu);
+  showAMsg('rgOk','🎉 Account created! Welcome to SkyFly, '+fn+'!','ok');
+  setTimeout(()=>{closeAuth();updateNavUser(nu);toast('🎉 Welcome to SkyFly, '+fn+'!','success');},1000);
+}
+function socialAuth(prov){
+  showLoad(true,'Connecting to '+prov+'...');
+  setTimeout(()=>{
+    showLoad(false);
+    const u={id:'USR-SOC',fn:prov+' User',ln:'',email:prov.toLowerCase()+'@demo.com',phone:''};
+    setCurUser(u);closeAuth();updateNavUser(u);
+    toast('✅ Signed in with '+prov,'success');
+  },1400);
+}
+function forgotPw(){
+  const em=document.getElementById('si-email').value.trim();
+  if(!em||!em.includes('@')){showAMsg('siErr','Enter your email first, then click Forgot password');return;}
+  if(!getUsers().find(u=>u.email.toLowerCase()===em.toLowerCase())){showAMsg('siErr','No account found with this email');return;}
+  showAMsg('siOk','📧 Reset instructions sent to '+em,'ok');
+}
+function updateNavUser(u){
+  document.getElementById('navBtns').style.display='none';
+  document.getElementById('navUser').classList.add('show');
+  document.getElementById('navAv').textContent=u.fn[0].toUpperCase();
+  document.getElementById('navUname').textContent=u.fn;
+}
+function doLogout(){
+  sessionStorage.removeItem('sf_cur');
+  localStorage.removeItem('sf_cur');
+  document.getElementById('navUser').classList.remove('show');
+  document.getElementById('navBtns').style.display='flex';
+  toast('👋 Logged out','success');
+}
+function checkAutoLogin(){const u=getCurUser();if(u)updateNavUser(u);}
+
+// ══════════════════════════════════════════
+//  BARCODE GENERATOR (Code 128 style)
+// ══════════════════════════════════════════
+function drawBarcode(canvasId, text){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0,0,W,H);
+
+  // Generate bar pattern from text chars
+  const bars = [];
+  for(let i=0;i<text.length;i++){
+    const c = text.charCodeAt(i);
+    // Create varied bar widths based on char code
+    const pattern = [
+      (c & 0b10000000) ? 3 : 1,
+      (c & 0b01000000) ? 1 : 2,
+      (c & 0b00100000) ? 2 : 1,
+      (c & 0b00010000) ? 1 : 3,
+      (c & 0b00001000) ? 3 : 1,
+      (c & 0b00000100) ? 1 : 2,
+      (c & 0b00000010) ? 2 : 1,
+      (c & 0b00000001) ? 1 : 1,
+    ];
+    bars.push(...pattern);
+  }
+
+  // Add start/stop guards
+  const fullBars = [2,1,2,1,2,...bars,2,1,2,1,2,3];
+  const totalUnits = fullBars.reduce((a,b)=>a+b,0);
+  const unitW = (W - 12) / totalUnits;
+  const barH = H - 14;
+
+  let x = 6;
+  ctx.fillStyle = '#000000';
+  for(let i=0;i<fullBars.length;i++){
+    const bw = fullBars[i] * unitW;
+    if(i % 2 === 0){ // even = black bar
+      ctx.fillRect(x, 4, Math.max(bw-0.5, 0.8), barH);
+    }
+    x += bw;
+  }
+
+  // Print reference text below barcode
+  ctx.fillStyle = '#333333';
+  ctx.font = '7px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(text.slice(0,20), W/2, H-2);
+}
+
+// ══════════════════════════════════════════
+//  TOAST & LOADING
+// ══════════════════════════════════════════
+let _tt=null;
+function toast(msg,type='success'){
+  const el=document.getElementById('toast');
+  document.getElementById('toastIco').textContent=type==='success'?'✅':type==='warn'?'⚠':'ℹ';
+  document.getElementById('toastTxt').textContent=msg;
+  el.classList.add('on');
+  if(_tt)clearTimeout(_tt);
+  _tt=setTimeout(()=>el.classList.remove('on'),3500);
+}
+function showLoad(show,msg='Loading...'){
+  const el=document.getElementById('loadVeil');
+  document.getElementById('ldText').textContent=msg;
+  show?el.classList.add('on'):el.classList.remove('on');
+}
+</script>
+</body>
+</html>
